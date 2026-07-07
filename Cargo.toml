@@ -1,0 +1,23 @@
+[package]
+
+description = "Canyon plugin for debugging."
+
+
+authors = ["Travis Zhang<https://github.com/travzhang>"]
+edition = "2021"
+name = "swc_plugin_canyon"
+version     = "0.0.20"
+
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+swc_core = { version = "0.79.37", features = ["ecma_plugin_transform"] }
+rand = "0.8.5"
+serde = { version = "1.0.160", features = ["derive"] }
+serde_json = "1.0.96"
+
+# .cargo/config defines few alias to build plugin.
+# cargo build-wasi generates wasm-wasi32 binary
+# cargo build-wasm32 generates wasm32-unknown-unknown binary.
