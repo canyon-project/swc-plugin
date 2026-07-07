@@ -1,7 +1,6 @@
 use swc_core::common::DUMMY_SP;
 use swc_core::ecma::{
     ast::*,
-    utils::{quote_ident, ExprFactory},
     visit::{VisitMut, VisitMutWith},
 };
 use swc_core::plugin::{metadata::TransformPluginProgramMetadata, plugin_transform};
@@ -15,30 +14,23 @@ impl VisitMut for InjectConsoleLog {
 
         let log_stmt = Stmt::Expr(ExprStmt {
             span: DUMMY_SP,
-            expr: Box::new(
-                CallExpr {
+            expr: Box::new(Expr::Call(CallExpr {
+                span: DUMMY_SP,
+                callee: Callee::Expr(Box::new(Expr::Member(MemberExpr {
                     span: DUMMY_SP,
-                    ctxt: Default::default(),
-                    callee: Callee::Expr(Box::new(
-                        MemberExpr {
-                            span: DUMMY_SP,
-                            obj: Box::new(Expr::Ident(quote_ident!("console"))),
-                            prop: MemberProp::Ident(IdentName::new("log".into(), DUMMY_SP)),
-                        }
-                        .into(),
-                    )),
-                    args: vec![ExprOrSpread {
-                        spread: None,
-                        expr: Box::new(Expr::Lit(Lit::Str(Str {
-                            span: DUMMY_SP,
-                            value: "swc-plugin-canyon".into(),
-                            raw: None,
-                        }))),
-                    }],
-                    type_args: None,
-                }
-                .into(),
-            ),
+                    obj: Box::new(Expr::Ident(Ident::new("console".into(), DUMMY_SP))),
+                    prop: MemberProp::Ident(Ident::new("log".into(), DUMMY_SP)),
+                }))),
+                args: vec![ExprOrSpread {
+                    spread: None,
+                    expr: Box::new(Expr::Lit(Lit::Str(Str {
+                        span: DUMMY_SP,
+                        value: "swc-plugin-canyon".into(),
+                        raw: None,
+                    }))),
+                }],
+                type_args: None,
+            })),
         });
 
         items.insert(0, ModuleItem::Stmt(log_stmt));
