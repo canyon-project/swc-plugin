@@ -22,15 +22,14 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v2
         with:
-          node-version: 20
+          node-version: 25
 
       - run: |
           echo "Before: corepack version => $(corepack --version || echo 'not installed')"
           npm install -g corepack@latest
           echo "After : corepack version => $(corepack --version)"
           corepack enable
-          pnpm --version
-          pnpm i
+          npm i
 
       - name: Install Rust Nightly
         uses: actions-rs/toolchain@v1
@@ -49,6 +48,6 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NODE_AUTH_TOKEN }}" > ~/.npmrc
 
       - name: Publish to npm
-        run: pnpm publish -f --no-git-checks --access=public
+        run: npm publish -f --no-git-checks --access=public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
